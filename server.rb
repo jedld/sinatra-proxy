@@ -16,8 +16,13 @@ $config['mapping'].each do |mapping|
   send(mapping['method'].to_sym, "#{mapping['path']}/*") do
     path = "#{mapping['host']}/#{request.path.gsub(mapping['path'],'')}"
     #build http party url
+    mapped_headers = {}
+    headers.each do |k,v|
+      mapped_headers[k] = v if v
+    end
+
     response = if mapping['method'].downcase == 'get'
-      HTTParty.get(path, query: params, headers: headers)
+      HTTParty.get(path, query: params, headers: mapped_headers)
     else
       HTTParty.post(path, body: request.body, headers: headers)
     end
