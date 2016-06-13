@@ -24,7 +24,7 @@ $config['mapping'].each do |mapping|
     response = if mapping['method'].downcase == 'get'
       HTTParty.get(path, query: params, headers: mapped_headers)
     else
-      HTTParty.post(path, body: request.body, headers: headers)
+      HTTParty.post(path, body: request.body, headers: mapped_headers)
     end
     status response.code
     response.body
