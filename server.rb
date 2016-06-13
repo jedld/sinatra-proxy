@@ -1,6 +1,7 @@
 require 'sinatra'
 require 'open-uri'
 require 'yaml'
+require 'httparty'
 
 $config = YAML.load_file('config.yml')
 
