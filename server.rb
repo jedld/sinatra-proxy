@@ -4,6 +4,11 @@ require 'yaml'
 
 $config = YAML.load_file('config.yml')
 
+get "/" do
+  "OK"
+end
+
+
 $config['mapping'].each do |mapping|
 
   puts "mapping #{mapping['method'].upcase} #{mapping['path']} -> #{mapping['host']}"
