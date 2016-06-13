@@ -1,0 +1,7 @@
+mapping:
+  - method: get
+    path: /example
+    host: http://www.google.com
+  - method: post
+    path: /example
+    host: https://www.google.com
