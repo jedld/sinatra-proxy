@@ -12,7 +12,7 @@ def get_headers
   .collect {|k,v| [k.sub(/^HTTP_/, ''), v]}
   .collect {|k,v| [k.split('_').collect(&:capitalize).join('-'), v]}
   .sort
-  .flatten].except('Host')
+  .flatten].except('Host', 'Connection', 'Version', 'X-Forwarded-For', 'X-Forwarded-Port', 'X-Forwarded-Proto')
 end
 
 get "/" do
