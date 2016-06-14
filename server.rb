@@ -42,7 +42,7 @@ $config['mapping'].each do |mapping|
       path = "#{mapping['host']}/#{request.path.gsub(mapping['path'],'')}"
       #build http party url
       mapped_headers = get_headers
-      puts { error: e.message, headers: mapped_headers, body: request.body, params: params.except('splat', 'captures'), path: request.path }.to_json
+      puts({ error: e.message, headers: mapped_headers, body: request.body, params: params.except('splat', 'captures'), path: request.path }.to_json)
       response = if mapping['method'].downcase == 'get'
         HTTParty.get(path, query: params.except('splat', 'captures'), headers: mapped_headers)
       else
