@@ -38,19 +38,21 @@ $config['mapping'].each do |mapping|
 
   puts "mapping #{mapping['method'].upcase} #{mapping['path']} -> #{mapping['host']}"
   send(mapping['method'].to_sym, "#{mapping['path']}/*") do
-    path = "#{mapping['host']}/#{request.path.gsub(mapping['path'],'')}"
-    #build http party url
-    mapped_headers = get_headers
-
-    response = if mapping['method'].downcase == 'get'
-      HTTParty.get(path, query: params.except('splat', 'captures'), headers: mapped_headers)
-    else
-      HTTParty.post(path, body: request.body, headers: mapped_headers)
+    begin
+      path = "#{mapping['host']}/#{request.path.gsub(mapping['path'],'')}"
+      #build http party url
+      mapped_headers = get_headers
+      puts { error: e.message, headers: mapped_headers, body: request.body, params: params.except('splat', 'captures'), path: request.path }.to_json
+      response = if mapping['method'].downcase == 'get'
+        HTTParty.get(path, query: params.except('splat', 'captures'), headers: mapped_headers)
+      else
+        HTTParty.post(path, body: request.body, headers: mapped_headers)
+      end
+      status response.code
+      response.body
+    rescue StandardError => e
+      status 500
+      { error: e.message, headers: mapped_headers, body: request.body, params: params.except('splat', 'captures'), path: request.path }.to_json
     end
-    status response.code
-    response.body
-  rescue StandardError => e
-    status 500
-    { error: e.message, headers: mapped_headers, body: request.body, params: params.except('splat', 'captures'), path: request.path }.to_json
   end
 end
