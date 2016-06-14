@@ -46,11 +46,13 @@ $config['mapping'].each do |mapping|
       response = if mapping['method'].downcase == 'get'
         HTTParty.get(path, query: params.except('splat', 'captures'), headers: mapped_headers)
       else
-        HTTParty.post(path, body: request.body, headers: mapped_headers)
+        HTTParty.post(path, body: request.body.read.to_s, headers: mapped_headers)
       end
       status response.code
       response.body
     rescue StandardError => e
+      puts e.message
+      puts e.backtrace
       status 500
       { error: e.message, headers: mapped_headers, body: request.body, params: params.except('splat', 'captures'), path: request.path }.to_json
     end
