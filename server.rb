@@ -8,7 +8,7 @@ require 'active_support/all'
 $config = YAML.load_file('config.yml')
 
 def get_headers
-  Hash[*env.select {|k,v| k.start_with? 'HTTP_'}
+  Hash[*env.select {|k,v| k.start_with?('HTTP_') || (k == 'CONTENT_TYPE') }
   .collect {|k,v| [k.sub(/^HTTP_/, ''), v]}
   .collect {|k,v| [k.split('_').collect(&:capitalize).join('-'), v]}
   .sort
@@ -42,7 +42,7 @@ $config['mapping'].each do |mapping|
       path = "#{mapping['host']}/#{request.path.gsub(mapping['path'],'')}"
       #build http party url
       mapped_headers = get_headers
-      # puts({ endpoint: path, headers: mapped_headers, body: request.body, params: params.except('splat', 'captures'), path: request.path }.to_json)
+      puts({ endpoint: path, headers: mapped_headers, body: request.body, params: params.except('splat', 'captures'), path: request.path }.to_json)
       response = if mapping['method'].downcase == 'get'
         HTTParty.get(path, query: params.except('splat', 'captures'), headers: mapped_headers)
       else
